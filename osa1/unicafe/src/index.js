@@ -29,6 +29,7 @@ const Statistics = (props) => {
         <div>
             <h1>statistiikka</h1>
             <table>
+                <tbody>
                 <Statistic name='hyvä' value={props.good}/>
                 <Statistic name='neutraali' value={props.neutral}/>
                 <Statistic name='huono' value={props.bad}/>
@@ -39,6 +40,7 @@ const Statistics = (props) => {
                 <Statistic name='positiivisia' value={
                 <Positive good={props.good} count ={count}/>
                 }/>
+                </tbody>
             </table>
             
             
