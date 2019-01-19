@@ -9,7 +9,10 @@ const Button = ({handleClick, text}) => {
   )
 }
 const Statistic = ({name, value}) => (
-    <p>{name} {value}</p>
+    <tr>
+        <td>{name}</td> 
+        <td>{value}</td>
+    </tr>
 )
 
 const Statistics = (props) => {
@@ -25,16 +28,24 @@ const Statistics = (props) => {
     return (
         <div>
             <h1>statistiikka</h1>
-            <Statistic name='hyvä' value={props.good}/>
-            <Statistic name='neutraali' value={props.neutral}/>
-            <Statistic name='huono' value={props.bad}/>
-            <Statistic name='yhteensä' value={count}/>
-            <Statistic name='average' value={
+            <table>
+                <Statistic name='hyvä' value={props.good}/>
+                <Statistic name='neutraali' value={props.neutral}/>
+                <Statistic name='huono' value={props.bad}/>
+                <Statistic name='yhteensä' value={count}/>
+                <Statistic name='average' value={
                 <Average good={props.good} bad={props.bad} count={count}/>
-            }/>
-            <Statistic name='positiivisia' value={
+                }/>
+                <Statistic name='positiivisia' value={
                 <Positive good={props.good} count ={count}/>
-            }/>
+                }/>
+            </table>
+            
+            
+            
+           
+            
+            
         </div>
     )
 }
