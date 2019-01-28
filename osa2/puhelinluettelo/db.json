@@ -1,0 +1,29 @@
+{
+  "persons": [
+    {
+      "name": "Martti Tienari",
+      "number": "040-123456",
+      "id": 2
+    },
+    {
+      "name": "Arto Järvinen",
+      "number": "040-123456",
+      "id": 3
+    },
+    {
+      "name": "Antti Lammi",
+      "number": "040-123456",
+      "id": 4
+    },
+    {
+      "name": "Matti Nykänen",
+      "number": "0100100",
+      "id": 6
+    },
+    {
+      "name": "Kalle Kinnunen",
+      "number": "040-123456",
+      "id": 7
+    }
+  ]
+}
