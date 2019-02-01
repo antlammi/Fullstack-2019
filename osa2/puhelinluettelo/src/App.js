@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './App.css'
 import personService from './services/persons'
 
 const Person = (props) => {
@@ -47,12 +48,26 @@ const Persons = ({personsToShow, removePerson}) => {
     </div>
   )
 }
+
+const Notification = ({message}) => {
+  if (message === null){
+    return null
+  }
+
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [newName, setNewName ] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newShowCriteria, setNewShowCriteria] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [notificationMessage, setNotificationMessage] = useState(null)
  
   useEffect(()=> {
     personService.getAll()
@@ -75,6 +90,7 @@ const App = () => {
     console.log(personObject)
     if (persons.map(person=> person.name).includes(newName)){
       window.alert(`${newName} on jo luettelossa`)
+      
     } else {
       personService
       .create(personObject)
@@ -84,6 +100,7 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
+      setNotificationMessage(`Lisättiin ${personObject.name}`)
     }
   }
   const removePerson = id => {
@@ -93,6 +110,7 @@ const App = () => {
     if (window.confirm(`Poistetaanko ${person.name}?`)){
       personService.remove(id)
       .then(setPersons(persons.filter(person => person.id !== id)))
+      setNotificationMessage(`Henkilö ${person.name} poistettu`)
       }
   }
   const nameListener = (event) => {
@@ -112,6 +130,7 @@ const App = () => {
   return (
     <div>
       <h2>Puhelinluettelo</h2>
+      <Notification message={notificationMessage} />
       <Filter newShowCriteria={newShowCriteria} 
         showListener={showListener}/>
         
