@@ -75,7 +75,18 @@ const App = () => {
       setPersons(initialPersons)
     })
   }, [])
-
+  const updatePerson = (id, personObject) => {
+    console.log(id)
+    personService.update(id, personObject)
+    .then(returnedPerson => {
+      
+      setPersons(persons.map(person => person.id !== id 
+        ? person : returnedPerson))
+      setNewName('')
+      setNewNumber('')
+    })
+    setNotificationMessage(`Päivitettiin henkilön ${personObject.name} tiedot.`)
+  }
   const personsToShow = showAll 
   ? persons 
   : persons.filter(person => person.name.toLowerCase().includes(newShowCriteria.toLowerCase()))
@@ -86,10 +97,12 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    console.log(persons)
-    console.log(personObject)
     if (persons.map(person=> person.name).includes(newName)){
-      window.alert(`${newName} on jo luettelossa`)
+      var person = persons.filter(person=>person.name===newName)[0]
+      if (window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)){
+         console.log(person, person.id, personObject)
+         updatePerson(person.id, personObject)
+       } 
       
     } else {
       personService

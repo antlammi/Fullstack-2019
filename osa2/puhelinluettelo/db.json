@@ -16,14 +16,14 @@
       "id": 4
     },
     {
-      "name": "Matti Nykänen",
-      "number": "0100100",
-      "id": 6
-    },
-    {
       "name": "Kalle Kinnunen",
       "number": "040-123456",
       "id": 7
+    },
+    {
+      "name": "Matti Nykänen",
+      "number": "020202",
+      "id": 8
     }
   ]
 }
