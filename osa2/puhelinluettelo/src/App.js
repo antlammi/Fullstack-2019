@@ -3,6 +3,7 @@ import './App.css'
 import personService from './services/persons'
 
 const Person = (props) => {
+  if (props.id === null) return <div></div>
   return(
   <div>
     <li>{props.name} {props.number} <button onClick={(() => 
@@ -48,7 +49,16 @@ const Persons = ({personsToShow, removePerson}) => {
     </div>
   )
 }
-
+const ErrorNotification = ({message})=> {
+  if (message===null){
+    return null
+  }
+  return (
+    <div className ="error-notification">
+      {message}
+    </div>
+  )
+}
 const Notification = ({message}) => {
   if (message === null){
     return null
@@ -68,7 +78,7 @@ const App = () => {
   const [newShowCriteria, setNewShowCriteria] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [notificationMessage, setNotificationMessage] = useState(null)
- 
+  const [errorNotificationMessage, setErrorNotificationMessage] = (useState(null))
   useEffect(()=> {
     personService.getAll()
     .then(initialPersons => {
@@ -76,16 +86,29 @@ const App = () => {
     })
   }, [])
   const updatePerson = (id, personObject) => {
-    console.log(id)
+    let success = true
     personService.update(id, personObject)
     .then(returnedPerson => {
-      
+     
       setPersons(persons.map(person => person.id !== id 
         ? person : returnedPerson))
       setNewName('')
       setNewNumber('')
+      setNotificationMessage(`Päivitettiin henkilön ${personObject.name} tiedot.`)
+      setTimeout(()=> {
+        setNotificationMessage(null)
+      }, 5000)
     })
-    setNotificationMessage(`Päivitettiin henkilön ${personObject.name} tiedot.`)
+    .catch(error => {
+      success = false
+      setPersons(persons.filter(person => person.id !== id))
+      setErrorNotificationMessage(`Henkilö ${personObject.name} oli poistettu`)
+      setNotificationMessage(null)
+      setTimeout(()=> {
+        setErrorNotificationMessage(null)
+      }, 5000)
+    })
+     
   }
   const personsToShow = showAll 
   ? persons 
@@ -144,6 +167,7 @@ const App = () => {
     <div>
       <h2>Puhelinluettelo</h2>
       <Notification message={notificationMessage} />
+      <ErrorNotification message={errorNotificationMessage} />
       <Filter newShowCriteria={newShowCriteria} 
         showListener={showListener}/>
         

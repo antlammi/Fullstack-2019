@@ -6,24 +6,14 @@
       "id": 2
     },
     {
-      "name": "Arto Järvinen",
-      "number": "040-123456",
-      "id": 3
-    },
-    {
-      "name": "Antti Lammi",
-      "number": "040-123456",
-      "id": 4
-    },
-    {
       "name": "Kalle Kinnunen",
       "number": "040-123456",
       "id": 7
     },
     {
-      "name": "Matti Nykänen",
-      "number": "020202",
-      "id": 8
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "id": 9
     }
   ]
 }
