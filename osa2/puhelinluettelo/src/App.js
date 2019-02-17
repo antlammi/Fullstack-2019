@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import personService from './services/persons'
+import personService from './services/people'
 
 const Person = (props) => {
   if (props.id === null) return <div></div>
@@ -72,7 +72,7 @@ const Notification = ({message}) => {
 }
 
 const App = () => {
-  const [ persons, setPersons] = useState([]) 
+  const [people, setPeople] = useState([]) 
   const [newName, setNewName ] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newShowCriteria, setNewShowCriteria] = useState('')
@@ -82,15 +82,14 @@ const App = () => {
   useEffect(()=> {
     personService.getAll()
     .then(initialPersons => {
-      setPersons(initialPersons)
+      setPeople(initialPersons)
     })
   }, [])
   const updatePerson = (id, personObject) => {
-    let success = true
+    
     personService.update(id, personObject)
     .then(returnedPerson => {
-     
-      setPersons(persons.map(person => person.id !== id 
+      setPeople(people.map(person => person.id !== id 
         ? person : returnedPerson))
       setNewName('')
       setNewNumber('')
@@ -100,8 +99,7 @@ const App = () => {
       }, 5000)
     })
     .catch(error => {
-      success = false
-      setPersons(persons.filter(person => person.id !== id))
+      setPeople(people.filter(person => person.id !== id))
       setErrorNotificationMessage(`Henkilö ${personObject.name} oli poistettu`)
       setNotificationMessage(null)
       setTimeout(()=> {
@@ -111,8 +109,8 @@ const App = () => {
      
   }
   const personsToShow = showAll 
-  ? persons 
-  : persons.filter(person => person.name.toLowerCase().includes(newShowCriteria.toLowerCase()))
+  ? people 
+  : people.filter(person => person.name.toLowerCase().includes(newShowCriteria.toLowerCase()))
   const addPerson = (event) => {
     event.preventDefault()
 
@@ -120,32 +118,36 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    if (persons.map(person=> person.name).includes(newName)){
-      var person = persons.filter(person=>person.name===newName)[0]
+    if (people.map(person=> person.name).includes(newName)){
+      var person = people.filter(person=>person.name===newName)[0]
       if (window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)){
-         console.log(person, person.id, personObject)
-         updatePerson(person.id, personObject)
+       
+        console.log(person, person.id, personObject)
+        updatePerson(person.id, personObject)
        } 
       
     } else {
       personService
       .create(personObject)
       .then(returnedPerson=> {
-        console.log(returnedPerson)
-        setPersons(persons.concat(returnedPerson))
+        setPeople(people.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
+        setNotificationMessage(`Lisättiin ${personObject.name}`)
+        setErrorNotificationMessage(null)
+      }).catch(error => {
+        setErrorNotificationMessage(JSON.stringify(error.response.data))
+        setNotificationMessage(null)
       })
-      setNotificationMessage(`Lisättiin ${personObject.name}`)
     }
   }
   const removePerson = id => {
     console.log(id)
-    const person = persons.find(n => n.id === id)
+    const person = people.find(n => n.id === id)
     console.log(person)
     if (window.confirm(`Poistetaanko ${person.name}?`)){
       personService.remove(id)
-      .then(setPersons(persons.filter(person => person.id !== id)))
+      .then(setPeople(people.filter(person => person.id !== id)))
       setNotificationMessage(`Henkilö ${person.name} poistettu`)
       }
   }
