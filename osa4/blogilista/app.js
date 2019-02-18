@@ -9,10 +9,11 @@ const blogSchema = require('./models/blog')
 app.use(bodyParser.json())
 
 const blogsRouter = require('./controllers/blogs')
-const Blog = blogSchema
+const loginRouter = require('./controllers/login')
 const usersRouter = require('./controllers/users')
 app.use('/api/users', usersRouter)
 app.use('/api/blogs', blogsRouter)
+app.use('/api/login', loginRouter)
 mongoose.connect(config.mongoUrl, { useNewUrlParser: true})
 
 
