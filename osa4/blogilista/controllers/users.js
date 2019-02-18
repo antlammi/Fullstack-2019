@@ -11,11 +11,21 @@ usersRouter.post('/', async(request, response, next) => {
     try {
         console.log(request.body)
         const body = request.body
+        if (body.username === undefined){
+            return response.status(400).json({error:'username missing'})
+        } else if (body.username.length < 3){
+            return response.status(400).json({error:'username too short'})
+        }
+        if (body.password === undefined){
+            return response.status(400).json({error: 'password missing'})
+        } else if (body.password.length<3 ){
+   
+            return response.status(400).json({error: 'password too short'})
+        }
 
         const saltRounds = 10
-        console.log('crash point 1')
         const passwordHash = await bcrypt.hash(body.password, saltRounds)
-        console.log('crash point 2')
+    
         const user = new User({
             username: body.username,
             name:body.name,

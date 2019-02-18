@@ -2,8 +2,14 @@ const supertest = require('supertest')
 const mongoose = require('mongoose')
 const app = require('../app')
 const api = supertest(app)
-
+const User = require('../models/user')
 const Blog = require('../models/blog')
+const initialUsers = [{
+    _id:"5c6abf050e3d4a6aeed2341d",
+    username: "Muumipeikko420",
+    name:"Muumipeikko",
+    __v: 0
+}]
 const initialBlogs = [
     {
       _id: "5a422a851b54a676234d17f7",
@@ -24,6 +30,10 @@ const initialBlogs = [
   ]
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    let userObject = new User(initialUsers[0])
+    await userObject.save()
 
     let blogObject = new Blog(initialBlogs[0])
     await blogObject.save()
@@ -42,19 +52,19 @@ test('all blogs are returned', async () => {
   
     expect(response.body.length).toBe(initialBlogs.length)
 })
+
 test('a valid blog can be added', async () => {
     const blog =  {
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12,
-        userId: '355'
+        likes: 12
       }
     const newBlog = new Blog(blog)
     await api
       .post('/api/blogs')
       .send(newBlog)
-      .expect(201)
+      .expect(200)
       .expect('Content-Type', /application\/json/)
     
     const response = await api.get('/api/blogs')
@@ -63,8 +73,9 @@ test('a valid blog can be added', async () => {
     
     expect(response.body.length).toBe(initialBlogs.length + 1)
     expect(contents).toContain('Canonical string reduction')
-   
+    
 })
+
 afterAll(() => {
     mongoose.connection.close()
 })
