@@ -10,8 +10,7 @@ const blogsRouter = require('./controllers/blogs')
 
 const Blog = blogSchema
 app.use('/api/blogs', blogsRouter)
-
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true})
+mongoose.connect(config.mongoUrl, { useNewUrlParser: true})
 
 app.use(cors())
 app.use(bodyParser.json())
