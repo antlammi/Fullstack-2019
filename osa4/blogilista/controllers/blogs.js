@@ -28,6 +28,8 @@ blogsRouter.post('/',async (request, response) => {
             return response.status(401).json({error: 'token missing or invalid'})
         }
         const user = await User.findById(decodedToken.id)
+        if (body.title === undefined||body.url === undefined) return response.status(400).json({error: 'bad request'})
+        
         const blog = new Blog({
             
             title: body.title,
