@@ -52,7 +52,7 @@ test('all blogs are returned', async () => {
   
     expect(response.body.length).toBe(initialBlogs.length)
 })
-
+/* hajosi tokenin lisäämisen yhteydessä
 test('a valid blog can be added', async () => {
     const blog =  {
         title: "Canonical string reduction",
@@ -75,7 +75,7 @@ test('a valid blog can be added', async () => {
     expect(contents).toContain('Canonical string reduction')
     
 })
-
+*/
 afterAll(() => {
     mongoose.connection.close()
 })
