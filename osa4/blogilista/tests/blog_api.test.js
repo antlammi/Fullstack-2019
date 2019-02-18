@@ -42,7 +42,28 @@ test('all blogs are returned', async () => {
   
     expect(response.body.length).toBe(initialBlogs.length)
 })
+test('a valid blog can be added', async () => {
+    const blog =  {
+        title: "Canonical string reduction",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+        likes: 12
+      }
+    const newBlog = new Blog(blog)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    
+    const response = await api.get('/api/blogs')
 
+    const contents = response.body.map(r => r.title)
+    
+    expect(response.body.length).toBe(initialBlogs.length + 1)
+    expect(contents).toContain('Canonical string reduction')
+   
+})
 afterAll(() => {
     mongoose.connection.close()
 })
