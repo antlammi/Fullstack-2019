@@ -47,7 +47,8 @@ test('a valid blog can be added', async () => {
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12
+        likes: 12,
+        userId: '355'
       }
     const newBlog = new Blog(blog)
     await api

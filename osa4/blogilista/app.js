@@ -6,13 +6,16 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
 const blogSchema = require('./models/blog')
-const blogsRouter = require('./controllers/blogs')
 app.use(bodyParser.json())
+
+const blogsRouter = require('./controllers/blogs')
 const Blog = blogSchema
+const usersRouter = require('./controllers/users')
+app.use('/api/users', usersRouter)
 app.use('/api/blogs', blogsRouter)
 mongoose.connect(config.mongoUrl, { useNewUrlParser: true})
 
-app.use(cors())
+
 
 
 module.exports = app
