@@ -76,6 +76,12 @@ test('a valid blog can be added', async () => {
     
 })
 */
+test('blog id has correct header', async() => {
+  const response = await api.get('/api/blogs')
+  const content = response.body
+  expect(JSON.stringify(content)).toContain("id")
+  expect(JSON.stringify(content)).not.toContain("_id")
+})
 afterAll(() => {
     mongoose.connection.close()
 })
