@@ -33,7 +33,8 @@ blogsRouter.post('/',async (request, response) => {
             title: body.title,
             author: body.author,
             url: body.url,
-            likes: body.likes,
+            likes: body.likes
+            ? body.likes : 0,
             user: user.id
           })
         console.log(blog)

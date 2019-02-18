@@ -52,17 +52,19 @@ test('all blogs are returned', async () => {
   
     expect(response.body.length).toBe(initialBlogs.length)
 })
-/* hajosi tokenin lisäämisen yhteydessä
 test('a valid blog can be added', async () => {
     const blog =  {
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
         likes: 12
+  
       }
+
     const newBlog = new Blog(blog)
     await api
       .post('/api/blogs')
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik11dW1pcGVpa2tvNDIwIiwiaWQiOiI1YzZhYmYwNTBlM2Q0YTZhZWVkMjM0MWQiLCJpYXQiOjE1NTA1MDUwOTZ9.GxPDqI0OI6MYNm0lYJZ1VBDNhglf25n1ks4o9WnYkms')
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -75,7 +77,29 @@ test('a valid blog can be added', async () => {
     expect(contents).toContain('Canonical string reduction')
     
 })
-*/
+
+test('if likes is empty, its value is set to 0', async() => {
+  const blog = {
+    title: "Canonical string reduction",
+    author: "Edsger W. Dijkstra",
+    url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html"
+  }
+  const newBlog = new Blog(blog)
+    await api
+      .post('/api/blogs')
+      .set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik11dW1pcGVpa2tvNDIwIiwiaWQiOiI1YzZhYmYwNTBlM2Q0YTZhZWVkMjM0MWQiLCJpYXQiOjE1NTA1MDUwOTZ9.GxPDqI0OI6MYNm0lYJZ1VBDNhglf25n1ks4o9WnYkms')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    
+    const response = await api.get('/api/blogs')
+
+    const contents = response.body.map(r => [r.title, r.likes].join(', '))
+    
+    expect(response.body.length).toBe(initialBlogs.length + 1)
+    expect(contents).toContain('Canonical string reduction, 0')
+
+})
 test('blog id has correct header', async() => {
   const response = await api.get('/api/blogs')
   const content = response.body
