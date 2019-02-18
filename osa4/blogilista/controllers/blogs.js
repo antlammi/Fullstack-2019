@@ -14,6 +14,27 @@ blogsRouter.get('/', async(request, response) => {
     response.json(blogs.map(note=> note.toJSON()))
 })
 
+blogsRouter.put('/:id', async (request, response) => {
+    const body = request.body
+    const oldblog = await Blog.findById(request.params.id)
+   
+    var user
+    if (body.user !== undefined){
+        user = await User.findById(body.user)
+    } 
+    const blog = {
+        title: body.title ? body.title : oldblog.title,
+        author: body.author? body.author : oldblog.author,
+        url:body.url? body.url:oldblog.url,
+        likes:body.likes?body.likes:oldblog.likes,
+        user:user?user:oldblog.user
+    }
+    await Blog.findByIdAndUpdate(request.params.id, blog, {new: true})
+    .then(updatedBlog => {
+        response.json(updatedBlog.toJSON())
+    }).catch(error => response.status(400).json({error:'Bad Request'}))
+})
+
 blogsRouter.post('/',async (request, response) => {
     const body = request.body
     console.log(body)
