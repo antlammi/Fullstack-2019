@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
@@ -10,7 +12,8 @@ const App = () => {
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogurl, setNewBlogurl] = useState('')
-  
+  const [notificationMessage, setNotificationMessage] = useState(null)
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -34,10 +37,11 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      console.log('käyttäjätunnus tai salasana virheellinen')
+      setNotificationMessage('käyttäjätunnus tai salasana virheellinen')
+      setTimeout((() => {setNotificationMessage(null)}), 5000)
     }
 
-    console.log('logging in with', username, password)
+    
   }
   const handleNewBlog = async (event) => {
     event.preventDefault()
@@ -49,15 +53,19 @@ const App = () => {
     try{
       if (await blogService.create(blogObject)){
         setBlogs(blogs.concat(blogObject))
+        setNotificationMessage(`a new blog: ${blogObject.title} by ${blogObject.author} added` )
+        setTimeout((() => {setNotificationMessage(null)}), 5000)
       }
     } catch (exception){
-      console.log('error creating blog')
+      setNotificationMessage('error creating blog')
+      setTimeout((() => {setNotificationMessage(null)}), 5000)
     }
   }
   const loginForm = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={notificationMessage}/>
         <form onSubmit={handleLogin}>
           <div>
             käyttäjätunnus
@@ -86,6 +94,7 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
+        <Notification message={notificationMessage}/>
         {user.name} logged in <br/><br/>
         <button type="logout" onClick={(() => {
           window.localStorage.removeItem('loggedBlogappUser')
