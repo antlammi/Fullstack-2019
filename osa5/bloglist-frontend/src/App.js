@@ -19,7 +19,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -32,7 +32,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try{
-      const user = await loginService.login({username, password,})
+      const user = await loginService.login({ username, password, })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
@@ -43,7 +43,7 @@ const App = () => {
       setTimeout((() => {setNotificationMessage(null)}), 5000)
     }
 
-    
+
   }
   const handleNewBlog = async (event) => {
     event.preventDefault()
@@ -65,18 +65,20 @@ const App = () => {
   }
   const loginForm = () => {
     return (
+
       <Togglable buttonLabel='login'>
-        <LoginForm 
-            username={username}
-            password={password}
-            handleUsernameChange = {({target}) => setUsername(target.value)}
-            handlePasswordChange={({target}) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-            notificationMessage={notificationMessage}
-          />
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange = {({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+          notificationMessage={notificationMessage}
+        />
       </Togglable>
     )
   }
+
   const blogForm = () => {
     return (
       <div>
@@ -91,50 +93,50 @@ const App = () => {
         </button>
         <h2>create new</h2>
         <form onSubmit={handleNewBlog}>
-        <div>
+          <div>
           title
-          <input 
-            type="text"
-            value={newBlogTitle}
-            name="Title"
-            onChange={({target}) => setNewBlogTitle(target.value)}
+            <input
+              type="text"
+              value={newBlogTitle}
+              name="Title"
+              onChange={({ target }) => setNewBlogTitle(target.value)}
             />
-        </div>
-        <div>
+          </div>
+          <div>
           author
-          <input 
-            type="text"
-            value={newBlogAuthor}
-            name="Author"
-            onChange={({target}) => setNewBlogAuthor(target.value)}
+            <input
+              type="text"
+              value={newBlogAuthor}
+              name="Author"
+              onChange={({ target }) => setNewBlogAuthor(target.value)}
             />
-        </div>
-        <div>
+          </div>
+          <div>
           url
-          <input 
-            type="url"
-            value={newBlogurl}
-            name="url"
-            onChange={({target}) => setNewBlogurl(target.value)}
+            <input
+              type="url"
+              value={newBlogurl}
+              name="url"
+              onChange={({ target }) => setNewBlogurl(target.value)}
             />
-        </div>
-        <button type="submit"> create </button>
+          </div>
+          <button type="submit"> create </button>
         </form>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
-       
+
       </div>
     )
   }
-  
+
   return(
     <div>
       {(user === null && loginForm())}
       {(user !== null && blogForm())}
-    </div>  
+    </div>
   )
-  
+
 }
 
 export default App
