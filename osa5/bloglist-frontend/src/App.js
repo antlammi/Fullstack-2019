@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -63,31 +65,16 @@ const App = () => {
   }
   const loginForm = () => {
     return (
-      <div>
-        <h2>Log in to application</h2>
-        <Notification message={notificationMessage}/>
-        <form onSubmit={handleLogin}>
-          <div>
-            käyttäjätunnus
-              <input
-                type="text"
-                value={username}
-                name="Username"
-                onChange={({ target }) => setUsername(target.value)}
-                /> 
-          </div>
-          <div>
-            salasana
-              <input
-                type="password"
-                value={password}
-                name="Password"
-                onChange = {({target}) => setPassword(target.value)}
-                />
-          </div>
-          <button type="submit">kirjaudu</button>
-        </form>
-      </div>
+      <Togglable buttonLabel='login'>
+        <LoginForm 
+            username={username}
+            password={password}
+            handleUsernameChange = {({target}) => setUsername(target.value)}
+            handlePasswordChange={({target}) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+            notificationMessage={notificationMessage}
+          />
+      </Togglable>
     )
   }
   const blogForm = () => {
