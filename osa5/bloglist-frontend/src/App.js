@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import useField from './hooks/index'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -52,18 +53,14 @@ const App = () => {
   }
   const handleNewBlog = async (event) => {
     event.preventDefault()
-    console.log(newBlogTitle.value)
-    console.log(newBlogAuthor.value)
-    console.log(newBlogurl.value)
     const blogObject = {
       title: newBlogTitle.value,
       author: newBlogAuthor.value,
       url: newBlogurl.value
     }
-    console.log(blogObject)
     try{
       if (await blogService.create(blogObject)){
-        setBlogs(blogs.concat(blogObject))
+        setBlogs(await blogService.getAll())
         setNotificationMessage(`a new blog: ${blogObject.title} by ${blogObject.author} added` )
         setTimeout((() => {setNotificationMessage(null)}), 5000)
       }
@@ -96,35 +93,15 @@ const App = () => {
           window.localStorage.removeItem('loggedBlogappUser')
           window.location.reload()
         })}>
-          logout
+            logout
         </button>
-        <h2>create new</h2>
-        <form onSubmit={handleNewBlog}>
-          <div>
-          title
-            <input
-              {...newBlogTitle}
-            />
-          </div>
-          <div>
-          author
-            <input
-              {...newBlogAuthor}
-            />
-          </div>
-          <div>
-          url
-            <input
-              {...newBlogurl}
-            />
-          </div>
-          <button type="submit"> create </button>
-        </form>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-
+        <BlogForm title={newBlogTitle} author={newBlogAuthor} url={newBlogurl} handleSubmit={handleNewBlog}/>
+        
+        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
       </div>
+
+
+
     )
   }
 

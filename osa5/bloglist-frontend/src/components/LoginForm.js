@@ -8,6 +8,8 @@ const LoginForm = ({
   username,
   password
 }) => {
+  delete username.reset
+  delete password.reset
   return (
     <div>
       <h2>Log in to application</h2>
@@ -25,7 +27,6 @@ const LoginForm = ({
             {...password}
           />
         </div>
-        
         <button type="submit">kirjaudu</button>
       </form>
     </div>
