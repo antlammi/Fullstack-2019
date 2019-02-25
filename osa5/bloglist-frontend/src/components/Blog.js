@@ -2,7 +2,7 @@ import React from 'react'
 import TogglableBlog from './TogglableBlog'
 import BlogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog , current_user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -27,7 +27,15 @@ const Blog = ({ blog }) => {
         console.log('Error while attempting to delete blog')
       }
     }
-    
+
+  }
+  const DeleteButton= () => {
+    if (current_user.username === blog.user.username){
+      return (
+        <div><button onClick={handleRemove}>remove</button></div>
+      )} else {
+      return (<div></div>)
+    }
   }
   let label = blog.title + ', ' + blog.author
   return (
@@ -39,7 +47,7 @@ const Blog = ({ blog }) => {
         <a href={blog.url}>{blog.url}</a><br/>
         {blog.likes} likes <button onClick={handleLike}>like</button><br/>
         Blog added by {blog.user.username}<br/>
-        <button onClick={handleRemove}>remove</button>
+        <DeleteButton/>
       </TogglableBlog>
     </div>
   )

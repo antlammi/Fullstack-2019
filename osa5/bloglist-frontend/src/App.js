@@ -103,9 +103,9 @@ const App = () => {
         <Togglable buttonLabel='create new'>
           <BlogForm title={newBlogTitle} author={newBlogAuthor} url={newBlogurl} handleSubmit={handleNewBlog}/>
         </Togglable>
-  
-        {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
-       
+
+        {blogs.map(blog => <Blog key={blog.id} current_user={user} blog={blog} />)}
+
       </div>
 
 
