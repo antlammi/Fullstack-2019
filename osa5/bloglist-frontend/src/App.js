@@ -7,7 +7,6 @@ import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import useField from './hooks/index'
 import BlogForm from './components/BlogForm'
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -71,8 +70,8 @@ const App = () => {
   }
   const loginForm = () => {
     return (
-
       <Togglable buttonLabel='login'>
+
         <LoginForm
           username={username}
           password={password}
