@@ -6,9 +6,13 @@ const BlogForm = ({
   url,
   handleSubmit,
 }) => {
-  delete title.reset
-  delete author.reset
-  delete url.reset
+  const newtitle = { ...title }
+  const newauthor = { ...author }
+  const newurl = { ...url }
+
+  delete newtitle.reset
+  delete newauthor.reset
+  delete newurl.reset
   return (
     <div>
       <h2>create new</h2>
@@ -16,19 +20,19 @@ const BlogForm = ({
         <div>
             title
           <input
-            {...title}
+            {...newtitle}
           />
         </div>
         <div>
             author
           <input
-            {...author}
+            {...newauthor}
           />
         </div>
         <div>
             url
           <input
-            {...url}
+            {...newurl}
           />
         </div>
         <button type="submit"> create </button>

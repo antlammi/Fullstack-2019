@@ -95,8 +95,9 @@ const App = () => {
         })}>
             logout
         </button>
-        <BlogForm title={newBlogTitle} author={newBlogAuthor} url={newBlogurl} handleSubmit={handleNewBlog}/>
-        
+        <Togglable buttonLabel='create new'>
+          <BlogForm title={newBlogTitle} author={newBlogAuthor} url={newBlogurl} handleSubmit={handleNewBlog}/>
+        </Togglable>
         {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
       </div>
 

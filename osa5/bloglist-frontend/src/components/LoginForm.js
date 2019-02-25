@@ -8,8 +8,10 @@ const LoginForm = ({
   username,
   password
 }) => {
-  delete username.reset
-  delete password.reset
+  const username_submit = { ...username }
+  const password_submit = { ...password }
+  delete username_submit.reset
+  delete password_submit.reset
   return (
     <div>
       <h2>Log in to application</h2>
@@ -18,13 +20,13 @@ const LoginForm = ({
         <div>
               käyttäjätunnus
           <input
-            {...username}
+            {...username_submit}
           />
         </div>
         <div>
               salasana
           <input
-            {...password}
+            {...password_submit}
           />
         </div>
         <button type="submit">kirjaudu</button>
