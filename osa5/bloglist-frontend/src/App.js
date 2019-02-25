@@ -5,16 +5,19 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
+import useField from './hooks/index'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlogTitle, setNewBlogTitle] = useState('')
-  const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogurl, setNewBlogurl] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
+
+
+  const newBlogTitle = useField('text')
+  const newBlogAuthor = useField('text')
+  const newBlogurl = useField('text')
+  const username = useField('text')
+  const password = useField('text')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -36,9 +39,11 @@ const App = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     } catch (exception) {
+      username.reset()
+      password.reset()
       setNotificationMessage('käyttäjätunnus tai salasana virheellinen')
       setTimeout((() => {setNotificationMessage(null)}), 5000)
     }
@@ -47,11 +52,15 @@ const App = () => {
   }
   const handleNewBlog = async (event) => {
     event.preventDefault()
+    console.log(newBlogTitle.value)
+    console.log(newBlogAuthor.value)
+    console.log(newBlogurl.value)
     const blogObject = {
-      title: newBlogTitle,
-      author: newBlogAuthor,
-      url: newBlogurl
+      title: newBlogTitle.value,
+      author: newBlogAuthor.value,
+      url: newBlogurl.value
     }
+    console.log(blogObject)
     try{
       if (await blogService.create(blogObject)){
         setBlogs(blogs.concat(blogObject))
@@ -70,8 +79,6 @@ const App = () => {
         <LoginForm
           username={username}
           password={password}
-          handleUsernameChange = {({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
           handleSubmit={handleLogin}
           notificationMessage={notificationMessage}
         />
@@ -96,28 +103,19 @@ const App = () => {
           <div>
           title
             <input
-              type="text"
-              value={newBlogTitle}
-              name="Title"
-              onChange={({ target }) => setNewBlogTitle(target.value)}
+              {...newBlogTitle}
             />
           </div>
           <div>
           author
             <input
-              type="text"
-              value={newBlogAuthor}
-              name="Author"
-              onChange={({ target }) => setNewBlogAuthor(target.value)}
+              {...newBlogAuthor}
             />
           </div>
           <div>
           url
             <input
-              type="url"
-              value={newBlogurl}
-              name="url"
-              onChange={({ target }) => setNewBlogurl(target.value)}
+              {...newBlogurl}
             />
           </div>
           <button type="submit"> create </button>

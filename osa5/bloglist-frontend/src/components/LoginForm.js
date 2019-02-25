@@ -4,8 +4,6 @@ import PropTypes from 'prop-types'
 
 const LoginForm = ({
   handleSubmit,
-  handleUsernameChange,
-  handlePasswordChange,
   notificationMessage,
   username,
   password
@@ -18,21 +16,16 @@ const LoginForm = ({
         <div>
               käyttäjätunnus
           <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={handleUsernameChange}
+            {...username}
           />
         </div>
         <div>
               salasana
           <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange = {handlePasswordChange}
+            {...password}
           />
         </div>
+        
         <button type="submit">kirjaudu</button>
       </form>
     </div>
@@ -41,9 +34,7 @@ const LoginForm = ({
 
 LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  handleUsernameChange: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired
+  username: PropTypes.object.isRequired,
+  password: PropTypes.object.isRequired
 }
 export default LoginForm
