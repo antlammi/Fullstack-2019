@@ -12,10 +12,22 @@ const Blog = ({ blog }) => {
   }
 
   const handleLike = async () => {
-    
     await BlogService.put(blog)
     window.location.reload()
 
+  }
+
+  const handleRemove = async () => {
+    if (window.confirm('Remove blog ' + blog.title + ' by ' +blog.author +'?')) {
+      try {
+        await BlogService.remove(blog.id)
+        window.location.reload()
+        console.log('Blog deleted succesfully')
+      } catch(error){
+        console.log('Error while attempting to delete blog')
+      }
+    }
+    
   }
   let label = blog.title + ', ' + blog.author
   return (
@@ -27,6 +39,7 @@ const Blog = ({ blog }) => {
         <a href={blog.url}>{blog.url}</a><br/>
         {blog.likes} likes <button onClick={handleLike}>like</button><br/>
         Blog added by {blog.user.username}<br/>
+        <button onClick={handleRemove}>remove</button>
       </TogglableBlog>
     </div>
   )
