@@ -12,7 +12,7 @@ beforeEach(() => {
     likes: 5
   }
 
- 
+
 })
 test('renders content', () => {
   let component = render(
@@ -37,10 +37,10 @@ test('like button functions correctly', () => {
   fireEvent.click(button)
 
   expect(clicks).toEqual(1)
-  
+
   fireEvent.click(button)
   fireEvent.click(button)
-  
+
   expect(clicks).toEqual(3)
 })
 
