@@ -18,10 +18,10 @@ const notificationReducer = (state = initialState, action) => {
     console.log('action', action)
     switch(action.type){
         case 'SET_NOTIFICATION':
-            state.message = action.message
+            state = {...state, message: action.message }
             return state
         case 'DEL_NOTIFICATION':
-            state.message = ''
+            state = { ...state, message: ''}
             return state
         default:
             return state

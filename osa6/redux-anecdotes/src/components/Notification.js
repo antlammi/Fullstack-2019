@@ -1,24 +1,39 @@
 import React from 'react';
 import { newNotification } from '../reducers/notificationReducer'
 import { removeNotification } from '../reducers/notificationReducer'
-const Notification = ({store, message })=> {
-  if (message !== '') {
+import { connect } from 'react-redux'
+
+const Notification = (props)=> {
+
+ 
+  if (props.notification.message !== ''){
     const style = {
       border: 'solid',
       padding: 10,
       borderWidth: 1
     }
-    if (store.getState().notification.message !== message) { //oli ongelmia sisäkkäisten store dispatch kutsujen kanssa, pikainen spagettiratkaisu tähän
-      store.dispatch(newNotification(message))
-    }
-    setTimeout(() => store.dispatch(removeNotification()), 5000)
     
+    
+    setTimeout(() => {
+      props.removeNotification()
+      props.newNotification('')
+    }, 5000)
+    console.log(props.notification.message)
+   
+  
     return (
       <div style={style}>
-        {store.getState().notification.message}
+        {props.notification.message}
       </div>
     )
-  } else return <div></div>
+    
+  } else return (<div></div>)
 }
-
-export default Notification
+const MapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+}
+const MapDispatchToProps = { newNotification, removeNotification }
+const ConnectedNotification = connect(MapStateToProps, MapDispatchToProps)(Notification)
+export default ConnectedNotification
