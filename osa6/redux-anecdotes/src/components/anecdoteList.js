@@ -1,5 +1,6 @@
 import React from 'react'
 import { incrementVote } from '../reducers/anecdoteReducer'
+import { newNotification } from '../reducers/notificationReducer'
 
 const sortFunction = (a,b) => {
   if (a.votes === b.votes) {
@@ -9,9 +10,11 @@ const sortFunction = (a,b) => {
   }
 }
 const AnecdoteList = ({store}) => {
-  const anecdotes = store.getState()
+  const anecdotes = store.getState().anecdotes
   anecdotes.sort(sortFunction)
   const vote = (id) => {
+    
+    store.dispatch(newNotification(`You voted for '`+ store.getState().anecdotes.find(n => n.id === id).content+ `'`))
     store.dispatch(incrementVote(id))
 
   }
