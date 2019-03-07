@@ -4,7 +4,7 @@ import { removeNotification } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
 
 const Notification = (props)=> {
-
+  
  
   if (props.notification.message !== ''){
     const style = {
@@ -16,7 +16,6 @@ const Notification = (props)=> {
     
     setTimeout(() => {
       props.removeNotification()
-      props.newNotification('')
     }, 5000)
     console.log(props.notification.message)
    

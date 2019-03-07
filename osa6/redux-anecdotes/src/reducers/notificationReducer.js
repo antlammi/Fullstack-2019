@@ -1,18 +1,18 @@
 const initialState = { message:'program started up successfully'}
-
-export const newNotification = message => {
-    return {
-        type: 'SET_NOTIFICATION',
-        message
-    }
-}
-
 export const removeNotification = () => {
     return {
         type: 'DEL_NOTIFICATION'
     }
 }
-
+export const newNotification = ({message}) => {
+    //Saatan palata vielä tekemään asynkronisen action creatorin, mutta sovelluksen nykyinen tila ei
+    //varsinaisesti vastaa tehtävänantoa suoraan, sillä notifikaation poisto on eristetty osaksi Notification
+    //luokkaa. Käytännössä muille komponenteille käyttötapa on jo tehtävänannon ratkaisua vastaava.
+    return {
+        type: 'SET_NOTIFICATION',
+        message
+    }
+}
 const notificationReducer = (state = initialState, action) => {
     console.log('state now: ', state)
     console.log('action', action)
