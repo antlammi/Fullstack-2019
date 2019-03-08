@@ -1,6 +1,6 @@
 import React from 'react'
 import { incrementVote } from '../reducers/anecdoteReducer'
-import { newNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
 
 const sortFunction = (a,b) => {
@@ -16,8 +16,9 @@ const AnecdoteList = (props) => {
   const anecdotes = props.anecdotes
   anecdotes.sort(sortFunction)
   const vote = (id) => {
-    
-    props.newNotification(`You voted for '`+props.anecdotes.find(n => n.id === id).content+ `'`)
+    const message = `You voted for '`+props.anecdotes.find(n => n.id === id).content+ `'`
+    console.log(message)
+    props.setNotification(message, 5)
     props.incrementVote(id)
 
   }
@@ -42,7 +43,7 @@ const MapStateToProps = (state) => {
     anecdotes:state.anecdotes,
   }
 }
-const MapDispatchToProps = { incrementVote, newNotification}
+const MapDispatchToProps = { incrementVote, setNotification}
 const ConnectedAnecdoteList = connect(
   MapStateToProps,
   MapDispatchToProps
