@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik11dW1pcGVpa2tvNDIwIiwiaWQiOiI1YzZhYmYwNTBlM2Q0YTZhZWVkMjM0MWQiLCJpYXQiOjE1NTA1MDUwOTZ9.GxPDqI0OI6MYNm0lYJZ1VBDNhglf25n1ks4o9WnYkms
+
+{
+    "title": "Muumilaakson tarinoita",
+    "author": "Muumipeikko",
+    "url": "testurl.fi",
+    "likes": 7, 
+    "userId":"5c6abf050e3d4a6aeed2341d"
+}

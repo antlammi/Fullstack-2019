@@ -1,0 +1,6 @@
+PUT http://localhost:3003/api/blogs/5c6ad75683b1a37e7d5553d5
+Content-Type: application/json
+
+{
+    "title":"Muumipeikko ja pyrstötähti"
+}
