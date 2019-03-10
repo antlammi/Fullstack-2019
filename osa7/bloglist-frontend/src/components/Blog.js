@@ -1,31 +1,33 @@
 import React from 'react'
-import TogglableBlog from './TogglableBlog'
-import BlogService from '../services/blogs'
 import { incrementLikes } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
+import { BrowserRouter as Router, Redirect, withRouter } from 'react-router-dom'
+import { Button } from 'semantic-ui-react'
 const Blog = (props) => {
   const blog = props.blog
-  const current_user = props.current_user
-  
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
+  if (blog === undefined){
+    return (
+      <div>
+        <Router>
+          <Redirect to="/blogs"/>
+        </Router>
+      </div>
+    )
   }
+
+  const current_user = JSON.parse(window.localStorage.getItem('loggedBlogappUser'))
 
   const handleLike = () => {
-    props.setNotification('You liked blog ' + blog.title, 5)
-    props.incrementLikes(props.blog)
+    props.setNotification('You liked blog ' + blog.title, 5, true)
+    props.incrementLikes(blog)
   }
 
-  const handleRemove = async () => {
-    if (window.confirm('Remove blog ' + blog.title + ' by ' +blog.author +'?')) {
+  const handleRemove = () => {
+    if (window.confirm('Remove blog ' +blog.title + ' by ' +blog.author +'?')) {
       try {
-        await BlogService.remove(blog.id)
-        window.location.reload()
+        props.removeBlog()
+        props.history.push('/')
         console.log('Blog deleted succesfully')
       } catch(error){
         console.log('Error while attempting to delete blog')
@@ -33,26 +35,29 @@ const Blog = (props) => {
     }
 
   }
-  const DeleteButton= () => {
+  const DeleteButtonRedirect= () => {
     if (current_user.username === blog.user.username){
       return (
-        <div><button onClick={handleRemove}>remove</button></div>
+        <div><Button primary onClick={handleRemove}>remove</Button></div>
       )} else {
       return (<div></div>)
     }
   }
-  let label = blog.title + ', ' + blog.author
+  const DeleteButton =withRouter(DeleteButtonRedirect)
+  const paragraphStyle = {
+    fontSize:20
+    
+  }
   return (
-
-    <div className ="blog" style={blogStyle}>
-      <TogglableBlog buttonLabel={label}>
-        {blog.title}<br/>
-        {blog.author}<br/>
-        <a href={blog.url}>{blog.url}</a><br/>
-        {blog.likes} likes <button onClick={handleLike}>like</button><br/>
-        Blog added by {blog.user.username}<br/>
+    <div>
+      <h2>{blog.title}</h2>
+      <div style={paragraphStyle}>
+        Author: {blog.author}<br/><br/>
+        URL:  <a href={blog.url}>{blog.url}</a><br/><br/>
+        {blog.likes} likes <button className="ui compact small button" onClick={handleLike}>like</button><br/><br/>
+        added by {blog.user.username}<br/><br/>
         <DeleteButton/>
-      </TogglableBlog>
+      </div>
     </div>
   )
 }

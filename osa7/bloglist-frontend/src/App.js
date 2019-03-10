@@ -3,7 +3,6 @@ import Blog from './components/Blog'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import Togglable from './components/Togglable'
 import useField from './hooks/index'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
@@ -11,7 +10,9 @@ import { setNotification } from './reducers/notificationReducer'
 import { createBlog, incrementLikes, initializeBlogs } from './reducers/blogReducer'
 import { setUser, delUser } from './reducers/userReducer'
 import { connect } from 'react-redux'
-
+import { Button, Menu, Container } from 'semantic-ui-react'
+import Bloglist from './components/Bloglist'
+import { BrowserRouter as Router, Route, Link, } from 'react-router-dom'
 const App = (props) => {
   const newBlogTitle = useField('text')
   const newBlogAuthor = useField('text')
@@ -21,6 +22,7 @@ const App = (props) => {
 
   useEffect(() => {
     props.initializeBlogs()
+    props.setNotification('program started up succesfully', 5, true)
   }, [])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -44,17 +46,16 @@ const App = (props) => {
     event.preventDefault()
     try{
       const user = await loginService.login({ username, password, })
-      console.log(user.username,user.name)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      props.setUser(user.username,user.name)
+      props.setUser(user)
       username.reset()
       password.reset()
-      props.setNotification('Login successful', 5)
+      props.setNotification('Login successful', 5, true)
     } catch (exception) {
       username.reset()
       password.reset()
-      props.setNotification('käyttäjätunnus tai salasana virheellinen',5)
+      props.setNotification('käyttäjätunnus tai salasana virheellinen',5, false)
     }
 
 
@@ -68,56 +69,71 @@ const App = (props) => {
     }
     try{
       props.createBlog(blogObject)
-      props.setNotification(`a new blog: ${blogObject.title} by ${blogObject.author} added` , 5)
+      props.setNotification(`a new blog: ${blogObject.title} by ${blogObject.author} added` , 5, true)
 
     } catch (exception){
-      props.setNotification('error creating blog', 5)
+      props.setNotification('error creating blog', 5, false)
     }
   }
   const loginForm = () => {
-    return (
-      <Togglable buttonLabel='login'>
+    if (user){
+      return(
+        <div>
+          {user.name} logged in <br/><br/>
+          <Button type="logout" onClick={(() => {
+            window.localStorage.removeItem('loggedBlogappUser')
+            props.delUser()
+            window.location.reload()
+          })}>
+            logout
+          </Button>
+        </div>
+      )
 
+    } else {
+      return (
         <LoginForm
           username={username}
           password={password}
           handleSubmit={handleLogin}
         />
-      </Togglable>
-    )
+      )
+    }
   }
 
-  const blogForm = () => {
+  const navMenu = () => {
+
     return (
       <div>
-        <h2>blogs</h2>
-        {user.name} logged in <br/><br/>
-        <button type="logout" onClick={(() => {
-          window.localStorage.removeItem('loggedBlogappUser')
-          props.delUser()
-          window.location.reload()
-        })}>
-            logout
-        </button>
-        <Togglable buttonLabel='create new'>
-          <BlogForm title={newBlogTitle} author={newBlogAuthor} url={newBlogurl} handleSubmit={handleNewBlog}/>
-        </Togglable>
+        <Router>
+          <div>
 
-        {blogs.map(blog => <Blog key={blog.id} current_user={user} blog={blog} />)}
+            <Menu inverted >
+              <Menu.Item link><Link to="/">{user ? user.username:'login'}</Link></Menu.Item>
+              <Menu.Item link><Link to="/blogs">blogs</Link></Menu.Item>
+              <Menu.Item link><Link to="/create">create new</Link></Menu.Item>
+            </Menu>
+            <Route exact path="/" render={() => loginForm()}/>
+            <Route exact path="/blogs" render={() => user !== null && <Bloglist blogs={blogs}/>}/>
+            <Route exact path="/create" render={() => user!== null && <BlogForm
+              title={newBlogTitle} author={newBlogAuthor}
+              url={newBlogurl} handleSubmit={handleNewBlog}/>}/>
+            <Route exact path="/blogs/:id" render={({ match }) =>
+              <Blog blog={blogs.find(a => a.id === match.params.id)}/>}/>
+          </div>
+        </Router>
 
       </div>
-
-
-
     )
   }
 
   return(
-    <div>
-      <Notification/>
-      {(props.user === null && loginForm())}
-      {(props.user !== null && blogForm())}
-    </div>
+    <Container>
+      <div>
+        <Notification/>
+        {navMenu()}
+      </div>
+    </Container>
   )
 
 }

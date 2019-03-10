@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-
+import { Form, Button } from 'semantic-ui-react'
 const LoginForm = ({
   handleSubmit,
   username,
@@ -13,21 +13,22 @@ const LoginForm = ({
   return (
     <div>
       <h2>Log in to application</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-              käyttäjätunnus
+      <Form onSubmit={handleSubmit}>
+        <Form.Field>
+          <label>käyttäjätunnus</label>
           <input
             {...username_submit}
           />
-        </div>
-        <div>
-              salasana
+        </Form.Field>
+       
+        <Form.Field>
+          <label>salasana</label>
           <input
             {...password_submit}
           />
-        </div>
-        <button type="submit">kirjaudu</button>
-      </form>
+        </Form.Field>
+        <Button type="submit">kirjaudu</Button>
+      </Form>
     </div>
   )
 }
