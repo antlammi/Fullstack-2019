@@ -1,8 +1,13 @@
 import React from 'react'
 import TogglableBlog from './TogglableBlog'
 import BlogService from '../services/blogs'
-
-const Blog = ({ blog , current_user }) => {
+import { incrementLikes } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { connect } from 'react-redux'
+const Blog = (props) => {
+  const blog = props.blog
+  const current_user = props.current_user
+  
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -11,10 +16,9 @@ const Blog = ({ blog , current_user }) => {
     marginBottom: 5
   }
 
-  const handleLike = async () => {
-    await BlogService.put(blog)
-    window.location.reload()
-
+  const handleLike = () => {
+    props.setNotification('You liked blog ' + blog.title, 5)
+    props.incrementLikes(props.blog)
   }
 
   const handleRemove = async () => {
@@ -52,5 +56,12 @@ const Blog = ({ blog , current_user }) => {
     </div>
   )
 }
-
-export default Blog
+const MapStateToProps = (state) => {
+  return{
+    blogs:state.blogs,
+    notification:state.notification
+  }
+}
+const MapDispatchToProps = { setNotification, incrementLikes }
+const ConnectedBlog = connect(MapStateToProps, MapDispatchToProps)(Blog)
+export default ConnectedBlog

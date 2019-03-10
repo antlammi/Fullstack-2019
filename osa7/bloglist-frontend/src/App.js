@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import useField from './hooks/index'
 import BlogForm from './components/BlogForm'
+import blogService from './services/blogs'
 import { setNotification } from './reducers/notificationReducer'
+import { createBlog, incrementLikes, initializeBlogs } from './reducers/blogReducer'
+import { setUser, delUser } from './reducers/userReducer'
 import { connect } from 'react-redux'
-const App = (props) => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
 
-  console.log(props)
+const App = (props) => {
   const newBlogTitle = useField('text')
   const newBlogAuthor = useField('text')
   const newBlogurl = useField('text')
@@ -21,25 +20,34 @@ const App = (props) => {
   const password = useField('text')
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs.sort(sortFunction) )
-    )
+    props.initializeBlogs()
   }, [])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      props.setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
+  const sortFunction = (a,b) => {
+    if (a.likes === b.likes) {
+      return 0
+    } else {
+      return(a.likes > b.likes) ? -1 : 1
+    }
+  }
+  const user = props.user
+  const blogs = props.blogs
+  blogs.sort(sortFunction)
   const handleLogin = async (event) => {
     event.preventDefault()
     try{
       const user = await loginService.login({ username, password, })
+      console.log(user.username,user.name)
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      props.setUser(user.username,user.name)
       username.reset()
       password.reset()
       props.setNotification('Login successful', 5)
@@ -59,11 +67,9 @@ const App = (props) => {
       url: newBlogurl.value
     }
     try{
-      if (await blogService.create(blogObject)){
-        setBlogs(await blogService.getAll())
-        props.setNotification(`a new blog: ${blogObject.title} by ${blogObject.author} added` , 5)
+      props.createBlog(blogObject)
+      props.setNotification(`a new blog: ${blogObject.title} by ${blogObject.author} added` , 5)
 
-      }
     } catch (exception){
       props.setNotification('error creating blog', 5)
     }
@@ -80,21 +86,15 @@ const App = (props) => {
       </Togglable>
     )
   }
-  const sortFunction = (a,b) => {
-    if (a.likes === b.likes) {
-      return 0
-    } else {
-      return(a.likes > b.likes) ? -1 : 1
-    }
-  }
+
   const blogForm = () => {
     return (
       <div>
         <h2>blogs</h2>
-
         {user.name} logged in <br/><br/>
         <button type="logout" onClick={(() => {
           window.localStorage.removeItem('loggedBlogappUser')
+          props.delUser()
           window.location.reload()
         })}>
             logout
@@ -115,12 +115,20 @@ const App = (props) => {
   return(
     <div>
       <Notification/>
-      {(user === null && loginForm())}
-      {(user !== null && blogForm())}
+      {(props.user === null && loginForm())}
+      {(props.user !== null && blogForm())}
     </div>
   )
 
 }
-const MapDispatchToProps = { setNotification }
-const ConnectedApp = connect(null, MapDispatchToProps)(App)
+const MapStateToProps = (state) => {
+  return {
+    blogs:state.blogs,
+    notification:state.notification,
+    user:state.user
+  }
+}
+
+const MapDispatchToProps = { setNotification, createBlog, initializeBlogs, setUser, delUser, incrementLikes }
+const ConnectedApp = connect(MapStateToProps, MapDispatchToProps)(App)
 export default ConnectedApp
